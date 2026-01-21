@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>信仰生命健檢量表</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif; background: linear-gradient(to bottom, #fafaf9, #fef3c7); min-height: 100vh; padding: 24px; line-height: 1.8; font-size: 22px; }
+    .container { max-width: 700px; margin: 0 auto; }
+    .card { background: white; border-radius: 24px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    h1 { font-size: 34px; color: #292524; text-align: center; margin-bottom: 12px; }
+    h2 { font-size: 28px; color: #44403c; margin-bottom: 16px; }
+    h3 { font-size: 24px; color: #57534e; margin-bottom: 12px; }
+    p { color: #57534e; font-size: 20px; margin-bottom: 12px; }
+    .subtitle { text-align: center; color: #78716c; margin-bottom: 32px; font-size: 22px; }
+    .verse-box { background: #fffbeb; border-radius: 18px; padding: 24px; text-align: center; margin-bottom: 32px; border: 2px solid #fde68a; }
+    .verse-box p { color: #92400e; font-style: italic; margin-bottom: 8px; font-size: 22px; }
+    .verse-box .ref { color: #b45309; font-size: 18px; font-style: normal; }
+    .btn { display: block; width: 100%; padding: 22px; border: none; border-radius: 50px; font-size: 22px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: #57534e; color: white; }
+    .btn-primary:hover { background: #44403c; }
+    .btn-secondary { background: #e7e5e4; color: #57534e; }
+    .btn-secondary:hover { background: #d6d3d1; }
+    .btn:disabled { background: #d6d3d1; color: #a8a29e; cursor: not-allowed; }
+    .progress-bar { display: flex; gap: 8px; margin-bottom: 28px; }
+    .progress-segment { flex: 1; height: 14px; border-radius: 7px; background: #e7e5e4; transition: background 0.3s; }
+    .dimension-header { display: flex; align-items: center; gap: 18px; padding: 24px; border-radius: 18px; margin-bottom: 24px; }
+    .dimension-icon { font-size: 48px; }
+    .dimension-title { font-weight: 700; font-size: 26px; }
+    .dimension-desc { font-size: 20px; opacity: 0.85; margin-top: 4px; }
+    .question-card { background: #fafaf9; border-radius: 18px; padding: 24px; margin-bottom: 18px; }
+    .question-text { color: #44403c; font-size: 21px; margin-bottom: 18px; line-height: 1.6; }
+    .scale-buttons { display: flex; gap: 10px; }
+    .scale-btn { flex: 1; padding: 18px 8px; border: none; border-radius: 14px; font-size: 22px; font-weight: 700; cursor: pointer; background: #e7e5e4; color: #78716c; transition: all 0.2s; }
+    .scale-btn:hover { background: #d6d3d1; }
+    .scale-btn.selected { color: white; }
+    .scale-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 16px; color: #a8a29e; }
+    .nav-buttons { display: flex; gap: 16px; margin-top: 28px; }
+    .nav-buttons .btn { flex: 1; }
+    .result-bar { margin-bottom: 20px; }
+    .result-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .result-bar-label { font-size: 20px; font-weight: 600; color: #44403c; }
+    .result-bar-score { font-size: 20px; font-weight: 700; }
+    .result-bar-track { height: 20px; background: #e7e5e4; border-radius: 10px; overflow: hidden; }
+    .result-bar-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
+    .pattern-box { border-radius: 18px; padding: 24px; margin-bottom: 24px; }
+    .pattern-title { font-size: 26px; font-weight: 700; margin-bottom: 12px; }
+    .pattern-note { font-style: italic; font-size: 20px; margin-bottom: 16px; }
+    .suggestion-box { background: white; border-radius: 14px; padding: 18px; }
+    .suggestion-box p { font-size: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .strength-box, .growth-box { border-radius: 18px; padding: 18px; }
+    .strength-box { background: #ecfdf5; }
+    .growth-box { background: #fef2f2; }
+    .strength-box h4 { color: #047857; font-size: 20px; margin-bottom: 12px; }
+    .growth-box h4 { color: #dc2626; font-size: 20px; margin-bottom: 12px; }
+    .strength-box p { color: #059669; font-size: 19px; margin-bottom: 8px; }
+    .growth-box p { color: #ef4444; font-size: 19px; margin-bottom: 8px; }
+    .teaching-accordion { border-radius: 18px; overflow: hidden; margin-bottom: 12px; }
+    .teaching-header { width: 100%; padding: 20px; border: none; background: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 21px; font-weight: 600; }
+    .teaching-content { padding: 0 20px 20px; display: none; }
+    .teaching-content.open { display: block; }
+    .teaching-scripture { background: white; border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+    .teaching-scripture p { font-size: 19px; margin-bottom: 10px; line-height: 1.6; }
+    .teaching-scripture .ref { color: #a8a29e; font-size: 17px; }
+    .teaching-practices { background: white; border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+    .teaching-practices p { font-size: 19px; margin-bottom: 8px; }
+    .teaching-warning { background: #fef3c7; border-radius: 14px; padding: 18px; }
+    .teaching-warning p { color: #b45309; font-size: 19px; }
+    .footer-verse { background: #292524; border-radius: 22px; padding: 28px; text-align: center; margin-bottom: 24px; }
+    .footer-verse .label { color: #a8a29e; font-size: 18px; margin-bottom: 12px; }
+    .footer-verse .text { color: white; font-size: 22px; font-weight: 500; margin-bottom: 8px; line-height: 1.6; }
+    .footer-verse .ref { color: #78716c; font-size: 19px; }
+    .hidden { display: none !important; }
+    .dim-rose { background: #fff1f2; border: 2px solid #fecdd3; }
+    .dim-rose .dimension-title, .dim-rose .dimension-desc { color: #be123c; }
+    .dim-emerald { background: #ecfdf5; border: 2px solid #a7f3d0; }
+    .dim-emerald .dimension-title, .dim-emerald .dimension-desc { color: #047857; }
+    .dim-blue { background: #eff6ff; border: 2px solid #bfdbfe; }
+    .dim-blue .dimension-title, .dim-blue .dimension-desc { color: #1d4ed8; }
+    .dim-amber { background: #fffbeb; border: 2px solid #fde68a; }
+    .dim-amber .dimension-title, .dim-amber .dimension-desc { color: #b45309; }
+    .dim-purple { background: #faf5ff; border: 2px solid #e9d5ff; }
+    .dim-purple .dimension-title, .dim-purple .dimension-desc { color: #7c3aed; }
+    .dim-slate { background: #f8fafc; border: 2px solid #cbd5e1; }
+    .dim-slate .dimension-title, .dim-slate .dimension-desc { color: #475569; }
+    .bar-rose { background: #fb7185; }
+    .bar-emerald { background: #34d399; }
+    .bar-blue { background: #60a5fa; }
+    .bar-amber { background: #fbbf24; }
+    .bar-purple { background: #a78bfa; }
+    .bar-slate { background: #94a3b8; }
+    .score-rose { color: #be123c; }
+    .score-emerald { color: #047857; }
+    .score-blue { color: #1d4ed8; }
+    .score-amber { color: #b45309; }
+    .score-purple { color: #7c3aed; }
+    .score-slate { color: #475569; }
+    .pattern-amber { background: #fffbeb; border: 2px solid #fde68a; }
+    .pattern-amber .pattern-title, .pattern-amber .pattern-note, .pattern-amber p { color: #92400e; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Intro Screen -->
+    <div id="intro-screen">
+      <div class="card" style="text-align: center; padding: 40px 24px;">
+        <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+        <h1>信仰生命健檢量表</h1>
+        <p class="subtitle">六個面向・整全生命・聖經根基</p>
+        <p style="margin-bottom: 24px;">這份量表幫助你從六個面向檢視信仰生命的健康狀態，最後將呈現你的信仰模式分析與成長建議。</p>
+        <div class="verse-box">
+          <p>「惟用愛心說誠實話，凡事長進，連於元首基督。」</p>
+          <span class="ref">— 以弗所書 4:15</span>
+        </div>
+        <button class="btn btn-primary" onclick="startAssessment()">開始評估</button>
+      </div>
+    </div>
+
+    <!-- Assessment Screen -->
+    <div id="assessment-screen" class="hidden">
+      <div class="progress-bar" id="progress-bar"></div>
+      <div id="dimension-header"></div>
+      <div id="questions-container"></div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" id="prev-btn" onclick="prevDimension()">上一項</button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextDimension()" disabled>下一項</button>
+      </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="hidden">
+      <div class="card">
+        <h2 style="text-align: center; margin-bottom: 16px;">你的信仰生命分析</h2>
+        <div id="result-bars"></div>
+      </div>
+      <div id="pattern-analysis"></div>
+      <div class="grid-2">
+        <div class="strength-box">
+          <h4>✨ 你的強項</h4>
+          <div id="strengths"></div>
+        </div>
+        <div class="growth-box">
+          <h4>🌱 成長空間</h4>
+          <div id="growth-areas"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📖 整全生命的教導</h3>
+        <p style="margin-bottom: 16px;">點擊各面向查看聖經根基與操練建議</p>
+        <div id="teachings-container"></div>
+      </div>
+      <div class="footer-verse">
+        <p class="label">整全信仰生命的核心</p>
+        <p class="text">「惟用愛心說誠實話，凡事長進，連於元首基督，全身都靠他聯絡得合式。」</p>
+        <p class="ref">— 以弗所書 4:15-16</p>
+      </div>
+      <button class="btn btn-secondary" onclick="restart()">重新評估</button>
+    </div>
+  </div>
+
+<script>
+const dimensions = [
+  {
+    id: 'godward', name: '向上：與神的關係', icon: '🔥', color: 'rose',
+    description: '敬拜、禱告、渴慕神',
+    questions: [
+      '我渴望親近神，不只是因為有需要才來到祂面前',
+      '我在敬拜中能真實地向神敞開心',
+      '禱告是我生活中自然的一部分，而非只有固定時段',
+      '我經歷過神的同在帶給我平安與力量'
+    ],
+    teaching: {
+      core: '健康的信仰生命始於與神真實的關係。這不是宗教儀式，而是愛的連結。',
+      scripture: [
+        { verse: '你們親近神，神就必親近你們。', ref: '雅各書 4:8' },
+        { verse: '神是個靈，所以拜他的必須用心靈和誠實拜他。', ref: '約翰福音 4:24' },
+        { verse: '你們要嘗嘗主恩的滋味，便知道他是美善。', ref: '詩篇 34:8' }
+      ],
+      practices: [
+        '每天設定一段「無議程」的安靜時間，單純來到神面前',
+        '學習用詩篇作為禱告的語言，幫助表達內心',
+        '在日常瑣事中練習意識到神的同在'
+      ],
+      warning: '當敬拜變成例行公事，禱告只剩下清單，可能是與神關係疏遠的徵兆。'
+    }
+  },
+  {
+    id: 'inward', name: '向內：生命的塑造', icon: '🌱', color: 'emerald',
+    description: '讀經、默想、品格更新',
+    questions: [
+      '我有規律讀經的習慣，並嘗試理解與應用',
+      '聖經的話語影響我的思考方式與生活決定',
+      '我誠實面對自己的軟弱與罪，願意被神改變',
+      '我可以看見自己這一年在品格上的成長'
+    ],
+    teaching: {
+      core: '生命改變不是靠意志力，而是透過神的話語更新我們的心思意念。',
+      scripture: [
+        { verse: '你的話是我腳前的燈，是我路上的光。', ref: '詩篇 119:105' },
+        { verse: '不要效法這個世界，只要心意更新而變化。', ref: '羅馬書 12:2' },
+        { verse: '聖經都是神所默示的，於教訓、督責、使人歸正、教導人學義都是有益的。', ref: '提摩太後書 3:16' }
+      ],
+      practices: [
+        '選擇一卷書連續研讀，而非跳躍式閱讀',
+        '讀經後問自己：這段經文要我相信什麼？要我做什麼？',
+        '找一位屬靈同伴彼此分享讀經心得，互相督責'
+      ],
+      warning: '知識的增加若沒有帶來生命的改變，可能落入法利賽人的陷阱。'
+    }
+  },
+  {
+    id: 'outward', name: '向外：福音的使命', icon: '🌍', color: 'blue',
+    description: '見證、傳福音、社會關懷',
+    questions: [
+      '我關心還不認識主的朋友、家人、同事的靈魂',
+      '我願意在生活中自然地分享信仰經歷',
+      '我為福音朋友禱告，並創造機會讓他們接觸信仰',
+      '我關心社會的需要，並以行動回應'
+    ],
+    teaching: {
+      core: '健康的生命會自然流露。我們領受恩典，也成為恩典的出口。',
+      scripture: [
+        { verse: '所以，你們要去，使萬民作我的門徒。', ref: '馬太福音 28:19' },
+        { verse: '你們是世上的光...你們的光也當這樣照在人前。', ref: '馬太福音 5:14-16' },
+        { verse: '有人問你們心中盼望的緣由，就要常作準備回答各人。', ref: '彼得前書 3:15' }
+      ],
+      practices: [
+        '列出5位你想為他們禱告的福音朋友，持續代求',
+        '練習用30秒分享你的信仰故事',
+        '參與一項關懷社區的服事，讓信仰與行動結合'
+      ],
+      warning: '只有內聚而沒有外展的信仰，容易變得自我中心。'
+    }
+  },
+  {
+    id: 'together', name: '向旁：肢體的連結', icon: '🤝', color: 'amber',
+    description: '團契、彼此相愛、互相建造',
+    questions: [
+      '我有可以說真話、彼此代禱的屬靈夥伴',
+      '我願意讓人看見我的軟弱，也願意承接別人的軟弱',
+      '我主動關心弟兄姊妹，不只在聚會中',
+      '我經歷過在困難中被肢體扶持的溫暖'
+    ],
+    teaching: {
+      core: '基督徒的生命不是獨行俠。我們被呼召進入一個彼此相愛、彼此建造的群體。',
+      scripture: [
+        { verse: '兩個人總比一個人好...若是跌倒，這人可以扶起他的同伴。', ref: '傳道書 4:9-10' },
+        { verse: '你們要彼此認罪，互相代求，使你們可以得醫治。', ref: '雅各書 5:16' },
+        { verse: '我們各人務要叫鄰舍喜悅，使他得益處，建立德行。', ref: '羅馬書 15:2' }
+      ],
+      practices: [
+        '主動約一位弟兄姊妹深度交談，不只是寒暄',
+        '在小組中分享一個你正在面對的挑戰，邀請代禱',
+        '記住組員的需要，在週間傳訊息關心'
+      ],
+      warning: '在教會中感到孤單，往往是因為我們只願意展示光鮮的一面。'
+    }
+  },
+  {
+    id: 'service', name: '向前：恩賜的發揮', icon: '⚡', color: 'purple',
+    description: '服事、恩賜、建造教會',
+    questions: [
+      '我知道神給我的恩賜，並在服事中發揮',
+      '我的服事是出於感恩與喜樂，而非責任或壓力',
+      '我在服事中經歷與神同工的滿足',
+      '我願意栽培他人，而非獨攬服事'
+    ],
+    teaching: {
+      core: '每個基督徒都領受了恩賜，為要建造基督的身體。服事不是少數人的責任，而是所有人的呼召。',
+      scripture: [
+        { verse: '各人要照所得的恩賜彼此服事，作神百般恩賜的好管家。', ref: '彼得前書 4:10' },
+        { verse: '我們各人蒙恩，都是照基督所量給各人的恩賜。', ref: '以弗所書 4:7' },
+        { verse: '將身體獻上，當作活祭...這是你們理所當然的事奉。', ref: '羅馬書 12:1' }
+      ],
+      practices: [
+        '做恩賜測驗，認識神給你的獨特組合',
+        '找一個你有感動的服事崗位，從小事開始嘗試',
+        '觀察誰可以被栽培，刻意邀請他們一起服事'
+      ],
+      warning: '過度服事導致枯竭，或服事動機變成追求肯定，都需要調整。'
+    }
+  },
+  {
+    id: 'integrity', name: '向下：生活的整全', icon: '🪨', color: 'slate',
+    description: '信仰與生活的一致性',
+    questions: [
+      '我在教會、家庭、職場的表現是一致的',
+      '我的信仰影響我如何使用金錢、時間',
+      '面對試探時，我會想到信仰的原則',
+      '我身邊不信主的人能從我身上看見不一樣的生命'
+    ],
+    teaching: {
+      core: '真實的信仰不分場合。我們被呼召在每一個生活領域中活出基督的樣式。',
+      scripture: [
+        { verse: '你要保守你心，勝過保守一切，因為一生的果效是由心發出。', ref: '箴言 4:23' },
+        { verse: '人是看外貌；耶和華是看內心。', ref: '撒母耳記上 16:7' },
+        { verse: '無論做什麼，都要從心裡做，像是給主做的，不是給人做的。', ref: '歌羅西書 3:23' }
+      ],
+      practices: [
+        '檢視你最難活出信仰的場域，為那處境禱告',
+        '請一位親近的人給你誠實的回饋',
+        '在職場或家庭中選擇一個具體改變來實踐'
+      ],
+      warning: '內外不一致的生命，長期會侵蝕我們的屬靈生命力。'
+    }
+  }
+];
+
+let currentDim = 0;
+let responses = {};
+
+function startAssessment() {
+  document.getElementById('intro-screen').classList.add('hidden');
+  document.getElementById('assessment-screen').classList.remove('hidden');
+  renderDimension();
+}
+
+function renderDimension() {
+  const dim = dimensions[currentDim];
+  
+  // Progress bar
+  let progressHtml = '';
+  dimensions.forEach((d, i) => {
+    const color = i <= currentDim ? `bar-${d.color}` : '';
+    progressHtml += `<div class="progress-segment ${color}"></div>`;
+  });
+  document.getElementById('progress-bar').innerHTML = progressHtml;
+  
+  // Dimension header
+  document.getElementById('dimension-header').innerHTML = `
+    <div class="dimension-header dim-${dim.color}">
+      <span class="dimension-icon">${dim.icon}</span>
+      <div>
+        <div class="dimension-title">${dim.name}</div>
+        <div class="dimension-desc">${dim.description}</div>
+      </div>
+    </div>
+  `;
+  
+  // Questions
+  let questionsHtml = '';
+  dim.questions.forEach((q, i) => {
+    const key = `${dim.id}-${i}`;
+    const selected = responses[key];
+    questionsHtml += `
+      <div class="question-card">
+        <p class="question-text">${q}</p>
+        <div class="scale-buttons">
+          ${[1,2,3,4,5].map(v => `
+            <button class="scale-btn ${selected === v ? `selected bar-${dim.color}` : ''}" 
+                    onclick="selectAnswer('${key}', ${v}, '${dim.color}')">${v}</button>
+          `).join('')}
+        </div>
+        <div class="scale-labels">
+          <span>不符合</span>
+          <span>非常符合</span>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('questions-container').innerHTML = questionsHtml;
+  
+  // Navigation buttons
+  document.getElementById('prev-btn').style.display = currentDim === 0 ? 'none' : 'block';
+  document.getElementById('next-btn').textContent = currentDim === dimensions.length - 1 ? '查看分析' : '下一項';
+  updateNextButton();
+}
+
+function selectAnswer(key, value, color) {
+  responses[key] = value;
+  renderDimension();
+}
+
+function updateNextButton() {
+  const dim = dimensions[currentDim];
+  const allAnswered = dim.questions.every((_, i) => responses[`${dim.id}-${i}`] !== undefined);
+  document.getElementById('next-btn').disabled = !allAnswered;
+}
+
+function prevDimension() {
+  if (currentDim > 0) {
+    currentDim--;
+    renderDimension();
+  }
+}
+
+function nextDimension() {
+  if (currentDim < dimensions.length - 1) {
+    currentDim++;
+    renderDimension();
+  } else {
+    showResults();
+  }
+}
+
+function getDimScore(dimId) {
+  const dim = dimensions.find(d => d.id === dimId);
+  let total = 0, count = 0;
+  dim.questions.forEach((_, i) => {
+    const val = responses[`${dimId}-${i}`];
+    if (val !== undefined) { total += val; count++; }
+  });
+  return count > 0 ? (total / count) : 0;
+}
+
+function showResults() {
+  document.getElementById('assessment-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.remove('hidden');
+  
+  const scores = dimensions.map(d => ({ ...d, score: getDimScore(d.id) }));
+  const avg = scores.reduce((a, b) => a + b.score, 0) / scores.length;
+  const sorted = [...scores].sort((a, b) => b.score - a.score);
+  
+  // Result bars
+  let barsHtml = '';
+  scores.forEach(s => {
+    barsHtml += `
+      <div class="result-bar">
+        <div class="result-bar-header">
+          <span class="result-bar-label">${s.icon} ${s.name.split('：')[0]}</span>
+          <span class="result-bar-score score-${s.color}">${s.score.toFixed(1)}</span>
+        </div>
+        <div class="result-bar-track">
+          <div class="result-bar-fill bar-${s.color}" style="width: ${(s.score / 5) * 100}%"></div>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('result-bars').innerHTML = barsHtml;
+  
+  // Pattern analysis
+  let pattern = {};
+  if (avg >= 4) {
+    pattern = { type: '成熟整全型', desc: '你在各面向都顯出健康的發展，這是持續操練的結果。', suggestion: '現在是幫助他人成長的時候，考慮成為門徒訓練者或小組長。' };
+  } else if (avg >= 3) {
+    pattern = { type: '穩定成長型', desc: '你有穩固的基礎，正在各面向逐步成長。', suggestion: '辨識出較弱的面向，這學期刻意在那裡投入。' };
+  } else {
+    pattern = { type: '重建根基型', desc: '目前可能正經歷挑戰期，或需要重新建立屬靈習慣。', suggestion: '先專注在與神的關係和肢體連結，其他會隨之成長。' };
+  }
+  
+  const godward = getDimScore('godward'), outward = getDimScore('outward');
+  const together = getDimScore('together'), service = getDimScore('service');
+  
+  let subtype = '';
+  if (godward >= 4 && outward < 3) subtype = '💡 細部特徵：內室敬拜者 — 你與神的關係深厚，但需要更多向外流露。';
+  else if (outward >= 4 && godward < 3) subtype = '💡 細部特徵：行動宣教者 — 你熱心傳福音，但要小心內在生命的根基。';
+  else if (together >= 4 && service < 3) subtype = '💡 細部特徵：關係建立者 — 你重視群體生活，也可以嘗試在服事中發揮恩賜。';
+  else if (service >= 4 && together < 3) subtype = '💡 細部特徵：獨立服事者 — 你在服事上盡心，但要注意與人的真實連結。';
+  
+  document.getElementById('pattern-analysis').innerHTML = `
+    <div class="pattern-box pattern-amber">
+      <div class="pattern-title">📋 信仰模式：${pattern.type}</div>
+      ${subtype ? `<p class="pattern-note">${subtype}</p>` : ''}
+      <p>${pattern.desc}</p>
+      <div class="suggestion-box">
+        <p><strong>建議方向：</strong>${pattern.suggestion}</p>
+      </div>
+    </div>
+  `;
+  
+  // Strengths and growth areas
+  document.getElementById('strengths').innerHTML = sorted.slice(0, 2).map(s => 
+    `<p>${s.icon} ${s.name.split('：')[0]}</p>`
+  ).join('');
+  document.getElementById('growth-areas').innerHTML = sorted.slice(-2).map(s => 
+    `<p>${s.icon} ${s.name.split('：')[0]}</p>`
+  ).join('');
+  
+  // Teachings
+  let teachingsHtml = '';
+  dimensions.forEach(d => {
+    teachingsHtml += `
+      <div class="teaching-accordion dim-${d.color}">
+        <button class="teaching-header" onclick="toggleTeaching('${d.id}')">
+          <span>${d.icon} ${d.name}</span>
+          <span id="arrow-${d.id}">▼</span>
+        </button>
+        <div class="teaching-content" id="teaching-${d.id}">
+          <p style="margin-bottom: 12px;">${d.teaching.core}</p>
+          <div class="teaching-scripture">
+            <p style="color: #78716c; font-size: 12px; margin-bottom: 8px;">📜 聖經根基</p>
+            ${d.teaching.scripture.map(s => `<p>「${s.verse}」<span class="ref">— ${s.ref}</span></p>`).join('')}
+          </div>
+          <div class="teaching-practices">
+            <p style="color: #78716c; font-size: 12px; margin-bottom: 8px;">🎯 操練建議</p>
+            ${d.teaching.practices.map(p => `<p>• ${p}</p>`).join('')}
+          </div>
+          <div class="teaching-warning">
+            <p>⚠️ ${d.teaching.warning}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('teachings-container').innerHTML = teachingsHtml;
+}
+
+function toggleTeaching(id) {
+  const content = document.getElementById(`teaching-${id}`);
+  const arrow = document.getElementById(`arrow-${id}`);
+  if (content.classList.contains('open')) {
+    content.classList.remove('open');
+    arrow.textContent = '▼';
+  } else {
+    content.classList.add('open');
+    arrow.textContent = '▲';
+  }
+}
+
+function restart() {
+  currentDim = 0;
+  responses = {};
+  document.getElementById('result-screen').classList.add('hidden');
+  document.getElementById('intro-screen').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
